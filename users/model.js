@@ -3,6 +3,7 @@ const db = require('../data/db-config');
 module.exports = {
     get,
     getById,
+    getByUsername,
     create
 }
 
@@ -16,7 +17,13 @@ async function getById(id) {
         .first();
 }
 
+async function getByUsername(username) {
+    return db('users')
+        .where({ username })
+        .first();
+}
+
 async function create(user) {
-    const [id] = await db.insert(user);
+    const [id] = await db('users').insert(user);
     return await getById(id);
 } 
