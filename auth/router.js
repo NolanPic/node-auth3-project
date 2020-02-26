@@ -22,8 +22,14 @@ router.post('/register', async (req, res) => {
             try {
                 // hash pwd
                 user.password = bcrypt.hashSync(user.password, 10);
+
+                // create user
                 const createdUser = await users.create(user);
+
+                // create jwt
                 const jwt = createJwt(createdUser);
+
+                // respond
                 res.status(201).json({
                     message: 'User successfully created',
                     token: jwt
@@ -43,8 +49,32 @@ router.post('/login', async (req, res) => {
         res.status(400).json({ error: 'Username and password are required' });
     }
     else {
-        // get user by username and confirm password
+        try {
+            // get user by username and confirm password
+            const userWithThisUsername = await users.getByUsername(credentials.username);
 
+            // verify credentials
+            if(userWithThisUsername 
+                && bcrypt.compareSync(credentials.password, userWithThisUsername.password)) {
+                    
+                    // create jwt
+                    const jwt = createJwt(userWithThisUsername);
+
+                    // respond
+                    res.status(200).json({
+                        message: 'Success',
+                        token: jwt
+                    });
+
+            }
+            else {
+                res.status(401).json({ error: 'Invalid credentials' });
+            }
+        }
+        catch(err) {
+            console.log(err);
+            res.status(500).json({ error: 'Something went wrong validating this user' });
+        }
     }
 
 });
