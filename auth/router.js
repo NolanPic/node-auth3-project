@@ -1,6 +1,7 @@
 const express = require('express');
 const users = require('../users/model');
 const createJwt = require('./createJwt');
+const bcrypt = require('bcryptjs');
 
 const router = express.Router();
 
@@ -19,6 +20,8 @@ router.post('/register', async (req, res) => {
         // 2. Create user & respond with jwt
         else {
             try {
+                // hash pwd
+                user.password = bcrypt.hashSync(user.password, 10);
                 const createdUser = await users.create(user);
                 const jwt = createJwt(createdUser);
                 res.status(201).json({
@@ -34,7 +37,15 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
+    const credentials = req.body;
+    if(!credentials.username || !credentials.password) {
+        res.status(400).json({ error: 'Username and password are required' });
+    }
+    else {
+        // get user by username and confirm password
+
+    }
 
 });
 
