@@ -7,8 +7,7 @@ module.exports = {
 }
 
 async function get() {
-    return db('users')
-        .select('*'); 
+    return db('users');
 }
 
 async function getById(id) {
