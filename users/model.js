@@ -7,8 +7,14 @@ module.exports = {
     create
 }
 
-async function get() {
-    return db('users');
+async function get(department) {
+    if(!department) {
+        return db('users');
+    }
+    else {
+        return db('users')
+            .where({ department });
+    }
 }
 
 async function getById(id) {

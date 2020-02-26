@@ -4,8 +4,9 @@ const { jwtSecret } = require('../config/secrets');
 const restricted = (req, res, next) => {
     const token = req.headers.authorization;
 
-    jwt.verify(token, jwtSecret, (err) => {
+    jwt.verify(token, jwtSecret, (err, decoded) => {
         if(!err) {
+            req.decodedJwt = decoded;
             next();
         }
         else {

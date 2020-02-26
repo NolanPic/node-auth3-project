@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.get('/', restricted, async (req, res) => {
     try {
-        const allUsers = await users.get();
-        res.status(200).json(allUsers);
+        const allUsersByDepartment = await users.get(req.decodedJwt.department);
+        res.status(200).json(allUsersByDepartment);
     }
     catch(err) {
         console.log(err);
